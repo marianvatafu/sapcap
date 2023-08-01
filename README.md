@@ -1,0 +1,2 @@
+# appTemplate - App
+> Business Application

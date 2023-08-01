@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>App</title>
+</head>
+
+<body>
+    <h2>Business Application</h2>
+    <h3>Catalog</h3>
+    <a href="/catalog/">Catalog</a><br />
+    <a href="/catalog/$metadata">Metadata</a><br />
+    <a href="/catalog/Foods">Foods</a><br />
+    <a href="/catalog/Foods?$apply=filter(amount%20gt%20700)/groupby((region),aggregate($count%20as%20nrCountries))">Top Foods Count</a><br />
+    <a href="/catalog/topFoods(amount=700)">Top Foods</a><br />
+    <a href="/catalog/VFoods">Foods by Region</a><br />
+    <a href="/catalog/SessionInfo">Session Info</a><br />
+</body>
+
+</html>

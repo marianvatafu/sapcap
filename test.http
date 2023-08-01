@@ -1,0 +1,60 @@
+GET http://localhost:4004/catalog/
+###
+GET http://localhost:4004/catalog/$metadata
+###
+GET https://5a08ba10trial-dev-apptemplate-srv.cfapps.us10-001.hana.ondemand.com/catalog/Foods
+###
+DELETE https://port4004-workspaces-ws-2mc4b.us10.trial.applicationstudio.cloud.sap/catalog/deleteAllFoods
+###
+POST http://localhost:4004/catalog/Sales(1)/CatalogService.boost
+Content-Type: application/json
+
+{}
+###
+GET http://localhost:4004/catalog/Sales?$apply=filter(amount%20gt%20500)/groupby((region),aggregate($count%20as%20nrCountries))
+###
+GET http://localhost:4004/catalog/topSales(amount=700)
+###
+GET http://localhost:4004/catalog/VSales
+###
+GET http://localhost:4004/catalog/SessionInfo
+###
+
+
+
+GET https://5a08ba10trial-dev-apptemplate-srv.cfapps.us10-001.hana.ondemand.com/catalog/Foods
+###
+DELETE https://5a08ba10trial-dev-apptemplate-srv.cfapps.us10-001.hana.ondemand.com/catalog/Foods(1)
+Authorization: Basic joe:
+###
+POST https://port4004-workspaces-ws-2mc4b.us10.trial.applicationstudio.cloud.sap/catalog/Foods
+Content-Type: application/json;IEEE754Compatible=true
+Authorization: Basic joe:
+{
+"ID": "10",
+"Name": "Carnatis",
+"Quantity": "3",
+"UOM": "kg"
+}
+###
+### ------------------------------------------------------------------------
+# Create book
+POST https://port4004-workspaces-ws-2mc4b.us10.trial.applicationstudio.cloud.sap/catalog/Foods
+Content-Type: application/json;IEEE754Compatible=true
+{
+"ID": "10",
+"Name": "Carnatis",
+"Quantity": "3",
+"UOM": "kg"
+}
+### ------------------------------------------------------------------------
+# Put image to books
+PUT https://port4004-workspaces-ws-2mc4b.us10.trial.applicationstudio.cloud.sap/admin/catalog/Foods
+Content-Type: application/json;IEEE754Compatible=true
+
+{
+"ID": "10",
+"Name": "Carnatis",
+"Quantity": "3",
+"UOM": "kg"
+}
