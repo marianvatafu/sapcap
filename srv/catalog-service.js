@@ -89,8 +89,8 @@ module.exports = cds.service.impl(async function () {
             const { Configuration, OpenAIApi } = require("openai");
 
             const configuration = new Configuration({
-            apiKey: "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",
-            organization: "org-6EZTYqHtqgHR09Kukym4FaCS"
+            apiKey: "EditHere",
+            organization: "org-EditHere"
             });
             const openai = new OpenAIApi(configuration);
 
@@ -122,8 +122,8 @@ module.exports = cds.service.impl(async function () {
             const { Configuration, OpenAIApi } = require("openai");
 
             const configuration = new Configuration({
-            apiKey: "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",
-            organization: "org-6EZTYqHtqgHR09Kukym4FaCS"
+            apiKey: "EditHere",
+            organization: "org-EditHere"
             });
             const openai = new OpenAIApi(configuration);
 
