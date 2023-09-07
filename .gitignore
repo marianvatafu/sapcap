@@ -21,3 +21,5 @@ _out
 .DS_Store
 # auto generated wildcard
 db/.env
+# added by cds
+.cdsrc-private.json
