@@ -1,22 +1,772 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <title>App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISST</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+	<link rel="icon" type="image/png" href="favicon.png" />
+
+    <style>
+        body {
+            background-color: #ffffff;
+            /* White background */
+            color: #000000;
+            /* Black text color */
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #3498db;
+            /* Blue header background */
+            color: #ffffff;
+            /* White text color */
+            padding: 20px;
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin: 2em auto;
+            
+			margin-left: 210px;  /* Adjust based on nav-panel width */
+            padding: 20px;
+            padding-top: 80px;  /* Adjust based on header height */
+            max-width: 800px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            cursor: pointer;
+            position: relative;
+            padding-right: 25px; /* Add space for sorting icon */
+        }
+
+        th::after {
+            content: "";
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 5px;
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-left: 4px solid transparent;
+            opacity: 0.6;
+        }
+
+        th.sorted-asc::after {
+            content: "";
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 5px;
+            width: 0;
+            height: 0;
+            border-top: 4px solid #000;
+            border-bottom: none;
+            border-left: 4px solid transparent;
+            opacity: 1;
+        }
+
+        th.sorted-desc::after {
+            content: "";
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 5px;
+            width: 0;
+            height: 0;
+            border-top: none;
+            border-bottom: 4px solid #000;
+            border-left: 4px solid transparent;
+            opacity: 1;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+        }
+
+        /* Style for the sorting options dropdown */
+        .sorting-options {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            z-index: 1;
+            top: 100%; /* Position below the header */
+            left: 0; /* Align with the header */
+        }
+
+        .sorting-options a {
+            padding: 8px;
+            display: block;
+            text-decoration: none;
+            color: #000;
+        }
+
+        .sorting-options a:hover {
+            background-color: #f2f2f2;
+        }
+
+        /* Add CSS styling as needed */
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* .dropdown-button {
+            background-color: #3498db;
+            color: #ffffff;
+            padding: 0px;
+            cursor: pointer;
+        } */
+
+        .dropdown-list {
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            z-index: 1;
+            display: none;
+            min-width: 160px;
+        }
+
+        .dropdown-list-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .dropdown-list-item:hover {
+            background-color: #ddd;
+        }
+		
+		 button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+		
+		#startDateDisplay, #endDateDisplay {
+            margin-top: 1em;
+            font-weight: bold;
+        }
+		/* Styles for navigation panel */
+        .nav-panel {
+            position: fixed;
+            top: 97px;  /* Adjust based on header height */
+            left: 0;
+            width: 200px;
+            background-color: #ffffff;
+            overflow-y: auto;
+            height: calc(100% - 60px);  /* Adjust based on header height */
+        }
+
+        .nav-link {
+            display: block;
+            padding: 10px;
+            text-align: center;
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .nav-link:hover {
+            background-color: #ddd;
+        }
+
+       
+        
+    </style>
 </head>
 
 <body>
-    <h2>Business Application</h2>
-    <h3>Catalog</h3>
-    <a href="/catalog/">Catalog</a><br />
-    <a href="/catalog/$metadata">Metadata</a><br />
-    <a href="/catalog/Foods">Foods</a><br />
-    <a href="/catalog/Foods?$apply=filter(amount%20gt%20700)/groupby((region),aggregate($count%20as%20nrCountries))">Top Foods Count</a><br />
-    <a href="/catalog/topFoods(amount=700)">Top Foods</a><br />
-    <a href="/catalog/VFoods">Foods by Region</a><br />
-    <a href="/catalog/SessionInfo">Session Info</a><br />
+
+	
+    <header>
+        <h1>Welcome to Integration Suite Enhanced Monitoring Tool</h1>
+    </header>
+
+	<div class="nav-panel">
+        <a href="#about" class="nav-link">About</a>
+        <a href="#traceScheduler" class="nav-link">Trace scheduler</a>
+        <a href="#results" class="nav-link">Results</a>
+		<a href="#loggedData" class="nav-link">Logged data</a>
+    </div>
+
+    <div class="container">
+
+        <h2 id="about">About the tool</h2>
+        <p>Welcome to the future of SAP Cloud Platform Integration (CPI) trace log management! Our innovative SAP CPI Trace Log Scheduler is a groundbreaking tool designed to empower businesses and IT professionals to take control of their SAP CPI trace logs like never before. Developed by a team of experts, this project has revolutionized trace log scheduling in the SAP CPI ecosystem, filling a critical gap that standard tools could not address.</p>
+            <hr style="border-color: #3498db;">
+        <h2 id="traceScheduler">Date Selection</h2>
+        <!-- <button id="toNextPage">To next page</button>
+        <script>
+            // Get a reference to the button
+            var toNextPage = document.getElementById("toNextPage");
+    
+            // Add a click event listener to the button
+            toNextPage.addEventListener("click", function () {
+                // Navigate to the second index page
+                window.location.href = "test.html";
+            });
+        </script> -->
+        <button id="setStartDateButton">Set start date</button>
+        <button id="setEndDateButton">Set end date</button>
+        <p></p>
+        <div id="startDateDisplay"></div>
+        <div id="endDateDisplay"></div>
+        
+        <script>
+            const startDateDisplay = document.getElementById('startDateDisplay');
+            const endDateDisplay = document.getElementById('endDateDisplay');
+            const setStartDateButton = document.getElementById('setStartDateButton');
+            const setEndDateButton = document.getElementById('setEndDateButton');
+
+            let startDateValue = null; // Variable to store the start date value
+            let endDateValue = null;   // Variable to store the end date value
+        
+            const startInput = flatpickr('#setStartDateButton', {
+                enableTime: true,
+                dateFormat: 'Y-m-dTH:i:ss',
+                onClose: function (selectedDates, dateStr, instance) {
+                    // startDateDisplay.textContent = `Start date selected: ${dateStr}`;
+                    
+                    // Change the button text
+                    setStartDateButton.textContent = `Start date: ${dateStr}`;
+                    setStartDateButton.style.backgroundColor = "#3498db"; // Change button color
+                    setStartDateButton.style.color = "#ffffff"; // Change text color
+
+                    // Save the selected start date
+                    startDateValue = dateStr;
+                    
+                    // Check if the selected start date is after "1990-01-01T00:00"
+                    const selectedDate = new Date(dateStr);
+                    const cutoffDate = new Date('1990-01-01T00:00');
+                    if (selectedDate > cutoffDate) {
+                        // Display the table
+                        dataTable.style.display = 'table';
+                    } else {
+                        // Hide the table
+                        dataTable.style.display = 'none';
+                    }
+                }
+            });
+        
+            const endInput = flatpickr('#setEndDateButton', {
+                enableTime: true,
+                dateFormat: 'Y-m-dTH:i:ss',
+                onClose: function (selectedDates, dateStr, instance) {
+                    // endDateDisplay.textContent = `End date selected: ${dateStr}`;
+                    
+                    // Change the button text
+                    setEndDateButton.textContent = `End date: ${dateStr}`;
+                    setEndDateButton.style.backgroundColor = "#3498db"; // Change button color
+                    setEndDateButton.style.color = "#ffffff"; // Change text color
+                    // Save the selected end date
+                    endDateValue = dateStr;
+                }
+            });
+        </script>
+        <h2>Select iFlow</h2>
+        <div class="dropdown-container">
+            <button class="dropdown-button" onclick="toggleDropdown()" id="dropdownButton">Select iFlow</button>
+            <div class="dropdown-list" id="dropdownList"></div>
+        </div>
+        
+        <script>
+            // Function to toggle the dropdown list
+            function toggleDropdown() {
+                const dropdownList = document.getElementById("dropdownList");
+                if (dropdownList.style.display === "block") {
+                    dropdownList.style.display = "none";
+                } else {
+                    // Fetch iFlow values and populate the dropdown
+                    fetchIflowValues();
+                    dropdownList.style.display = "block";
+                }
+            }
+        
+            // Function to fetch iFlow values and populate the dropdown
+            function fetchIflowValues() {
+                const dropdownList = document.getElementById("dropdownList");
+                const dropdownButton = document.getElementById("dropdownButton");
+        
+                const apiUrl = "https://d122d724trial-trial.integrationsuitetrial-apim.us10.hana.ondemand.com:443/d122d724trial/http/testMarian?Step=GetIflows&Test=Marian";
+                const apiKey = "8H7F6hMHlPtLlXBAkRBSuUF7eznoGz21";
+        
+                fetch(apiUrl, {
+                    method: "GET",
+                    headers: {
+                        "ApiKey": apiKey
+                    },
+                })
+                .then(response => response.text())
+                .then(xmlText => {
+                    // Parse the XML response
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                    const integrationRuntimeArtifacts = xmlDoc.querySelectorAll("IntegrationRuntimeArtifact Name");
+        
+                    // Clear existing dropdown items
+                    dropdownList.innerHTML = "";
+        
+                    // Populate dropdown with extracted values
+                    integrationRuntimeArtifacts.forEach(node => {
+                        const value = node.textContent;
+                        const listItem = document.createElement("div");
+                        listItem.classList.add("dropdown-list-item");
+                        listItem.textContent = value;
+                        listItem.addEventListener("click", function () {
+                            selectValue(value);
+                            dropdownList.style.display = "none";
+                        });
+                        dropdownList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching iFlow values:", error);
+                });
+
+                // Add a search functionality
+        searchInput.addEventListener("input", function () {
+            const searchValue = searchInput.value.trim().toLowerCase();
+            const items = dropdownList.querySelectorAll(".dropdown-list-item");
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchValue)) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        });
+            }
+
+            
+        
+            // Function to select a value from the dropdown list
+            function selectValue(value) {
+                const dropdownButton = document.getElementById("dropdownButton");
+                dropdownButton.textContent = value; // Change button text
+                iFlowSelectValue = value;
+                dropdownButton.style.backgroundColor = "#3498db"; // Change button color
+                dropdownButton.style.color = "#ffffff"; // Change text color
+        
+                // You can perform further actions with the selected value here
+                // For example, you can store it in a variable or send it to a server.
+            }
+        
+            // Close the dropdown when clicking outside
+            document.addEventListener("click", function (event) {
+                const dropdownContainer = document.querySelector(".dropdown-container");
+                if (!dropdownContainer.contains(event.target)) {
+                    const dropdownList = document.getElementById("dropdownList");
+                    dropdownList.style.display = "none";
+                }
+            });
+        </script>
+<button id="setTraceButton">Schedule trace</button>
+<p id="responseMessage"></p>
+
+        <hr style="border-color: #3498db;">
+
+        <h2>Upcoming traces deployed</h2>
+        <input type="text" id="searchInput" placeholder="Search for iFlow name..." onkeyup="filterTable()">
+        <br><br>
+
+<table id="dataTable">
+    <thead>
+        <tr>
+            <th onclick="sortTable(0)">iFlow name</th>
+            <th onclick="sortTable(1)">StartDate</th>
+            <th onclick="sortTable(2)">StartTime</th>
+            <th onclick="sortTable(3)">EndDate</th>
+            <th onclick="sortTable(4)">EndTime</th>
+        </tr>
+    </thead>
+    <tbody id="dataBody">
+        <!-- Table content will be added dynamically -->
+    </tbody>
+</table>
+
+<!-- Sorting options dropdown -->
+<div class="sorting-options" id="sortingOptions">
+    <a href="#" onclick="sortTable(0, 'asc')">Sort Ascending</a>
+    <a href="#" onclick="sortTable(0, 'desc')">Sort Descending</a>
+    <a href="#" onclick="sortTable(1, 'asc')">Sort Ascending</a>
+    <a href="#" onclick="sortTable(1, 'desc')">Sort Descending</a>
+    <a href="#" onclick="sortTable(2, 'asc')">Sort Ascending</a>
+    <a href="#" onclick="sortTable(2, 'desc')">Sort Descending</a>
+    <a href="#" onclick="sortTable(3, 'asc')">Sort Ascending</a>
+    <a href="#" onclick="sortTable(3, 'desc')">Sort Descending</a>
+    <a href="#" onclick="sortTable(4, 'asc')">Sort Ascending</a>
+    <a href="#" onclick="sortTable(4, 'desc')">Sort Descending</a>
+</div>
+
+<script>
+    // Function to filter the table based on the search input
+    function filterTable() {
+        const table = document.getElementById("dataTable");
+        const filterText = document.getElementById("searchInput").value.toUpperCase();
+        const rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) { // Start from index 1 to skip header row
+            const cells = rows[i].getElementsByTagName("td");
+            let matchFound = false;
+
+            for (let j = 0; j < cells.length; j++) {
+                const textValue = cells[j].textContent || cells[j].innerText;
+                if (textValue.toUpperCase().includes(filterText)) {
+                    matchFound = true;
+                    break; // If a match is found in any cell, show the row
+                }
+            }
+
+            if (matchFound) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+    // Function to make the GET request and populate the table
+    function loadTableData() {
+        // Define the URL and headers for the GET request
+        const apiUrl = 'https://d122d724trial-trial.integrationsuitetrial-apim.us10.hana.ondemand.com:443/d122d724trial/http/testMarian?Step=ScheduledTraces';
+        const apiKey = '8H7F6hMHlPtLlXBAkRBSuUF7eznoGz21';
+
+        // Fetch data using the GET request
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'ApiKey': apiKey
+            }
+        })
+        .then(response => response.text())
+        .then(data => {
+            // Parse the XML response
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(data, 'text/xml');
+            const iFlows = xmlDoc.querySelectorAll('iFlow');
+
+            // Populate the table with data
+            const tableBody = document.getElementById('dataBody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            iFlows.forEach(iFlow => {
+                const iFlowName = iFlow.querySelector('iFlowName').textContent;
+                const startDate = iFlow.querySelector('StartDate').textContent;
+                const startTime = iFlow.querySelector('StartTime').textContent;
+                const endDate = iFlow.querySelector('EndDate').textContent;
+                const endTime = iFlow.querySelector('EndTime').textContent;
+
+                // Create a new table row and cells
+                const row = document.createElement('tr');
+                const iFlowNameCell = document.createElement('td');
+                const startDateCell = document.createElement('td');
+                const startTimeCell = document.createElement('td');
+                const endDateCell = document.createElement('td');
+                const endTimeCell = document.createElement('td');
+
+                // Set cell values
+                iFlowNameCell.textContent = iFlowName;
+                startDateCell.textContent = startDate;
+                startTimeCell.textContent = startTime;
+                endDateCell.textContent = endDate;
+                endTimeCell.textContent = endTime;
+
+                // Append cells to the row
+                row.appendChild(iFlowNameCell);
+                row.appendChild(startDateCell);
+                row.appendChild(startTimeCell);
+                row.appendChild(endDateCell);
+                row.appendChild(endTimeCell);
+
+                // Append the row to the table
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading table data:', error);
+        });
+    }
+
+    // Call the function to load table data when the page loads
+    window.addEventListener('load', loadTableData);
+</script>
+<button onclick="exportTableToExcel()">Export to Excel</button>
+<P></P>
+
+<script>
+    // Function to export the table data to an Excel file
+    function exportTableToExcel() {
+        const table = document.getElementById("dataTable");
+        const ws = XLSX.utils.table_to_sheet(table);
+
+        // Create a new workbook and add the worksheet
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Table Data");
+
+        // Save the workbook as an Excel file
+        XLSX.writeFile(wb, "table_data.xlsx");
+    }
+</script>
+
+        <hr style="border-color: #3498db;">
+        <h2 id="results">Results</h2>
+        <p>We have a backlog of 3 trace logs for the past week.</p>
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>iFlow Name</th>
+                    <th>MPL ID</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="dataBody">
+                <!-- Table content will be added dynamically -->
+            </tbody>
+        </table>
+        <p>Select an ID to see extra details.</p>
+        <p>The process ended in ERROR state.</p>
+        <p>The error text is "CamelException : Cannot to HTTP GET /dummy/location().</p>
+        <button id="interpretResponse">Get help on this error</button>
+        <p>According to our database, this issue can happen because there is a missing property that creates the URL.</p>
+        <p>The error message you're encountering, "CamelException: Cannot to HTTP GET /dummy/location()", suggests that there is an issue with an HTTP GET request in your SAP CPI (SAP Cloud Platform Integration) monitoring. This error message indicates that there's a problem making an HTTP GET request to the "/dummy/location()" endpoint.
+
+            To troubleshoot and resolve this issue, consider the following steps:
+            
+            Check URL and Endpoint: Review the URL you're using in your HTTP GET request. Ensure that the URL is correctly formed and points to a valid endpoint. In the error message, "/dummy/location()" looks like a placeholder or incorrect URL. Make sure you are using the correct URL for your intended API or resource.
+            
+            Authentication: If the endpoint requires authentication (such as API keys, tokens, or basic authentication), ensure that your request includes the necessary credentials and headers.
+            
+            Network Connectivity: Check your network connectivity to ensure that the SAP CPI environment can reach the target endpoint. Ensure that there are no network issues, firewalls, or network restrictions blocking the request.
+            
+            Endpoint Availability: Confirm that the endpoint you are trying to access is up and running. Sometimes, an endpoint might be temporarily unavailable, causing this error.
+            
+            Request Payload: Review the request payload, including any query parameters or request body, to ensure they are correctly formatted and match the expected format required by the endpoint.
+            
+            Logging and Debugging: Enable logging and debugging in your SAP CPI integration flow to capture more detailed information about the request and response. This can help pinpoint the exact issue.
+            
+            HTTP Methods: Confirm that you are using the correct HTTP method (GET in this case) for the intended operation. For example, if the endpoint expects a POST request, using GET could result in an error.
+            
+            Retry Mechanism: Consider implementing a retry mechanism in your integration flow to handle transient failures. Sometimes, temporary network issues can cause intermittent errors.
+            
+            Contact SAP Support: If you are unable to resolve the issue after performing these checks, consider reaching out to SAP support or consulting their documentation for specific error codes and solutions related to SAP CPI.</p>
+        <p>For extra details, please check the table below.</p>
+        <hr style="border-color: #3498db;">
+        <h2 id="loggedData">Logged data</h2>
+        <table id="dataTable2">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">MPL_ID</th>
+                    <th onclick="sortTable(1)">Step Name</th>
+                    <th onclick="sortTable(2)">Headers</th>
+                    <th onclick="sortTable(3)">Properties</th>
+                    <th onclick="sortTable(4)">Body</th>
+                </tr>
+            </thead>
+            <tbody id="dataBody2">
+                <!-- Table content will be added dynamically -->
+            </tbody>
+        </table>
+        
+        <!-- Sorting options dropdown -->
+        <div class="sorting-options" id="sortingOptions">
+            <a href="#" onclick="sortTable(0, 'asc')">Sort Ascending</a>
+            <a href="#" onclick="sortTable(0, 'desc')">Sort Descending</a>
+            <a href="#" onclick="sortTable(1, 'asc')">Sort Ascending</a>
+            <a href="#" onclick="sortTable(1, 'desc')">Sort Descending</a>
+            <a href="#" onclick="sortTable(2, 'asc')">Sort Ascending</a>
+            <a href="#" onclick="sortTable(2, 'desc')">Sort Descending</a>
+            <a href="#" onclick="sortTable(3, 'asc')">Sort Ascending</a>
+            <a href="#" onclick="sortTable(3, 'desc')">Sort Descending</a>
+            <a href="#" onclick="sortTable(4, 'asc')">Sort Ascending</a>
+            <a href="#" onclick="sortTable(4, 'desc')">Sort Descending</a>
+        </div>
+        
+        <script>
+            // Function to filter the table based on the search input
+            function filterTable() {
+                const table = document.getElementById("dataTable2");
+                const filterText = document.getElementById("searchInput").value.toUpperCase();
+                const rows = table.getElementsByTagName("tr");
+        
+                for (let i = 1; i < rows.length; i++) { // Start from index 1 to skip header row
+                    const cells = rows[i].getElementsByTagName("td");
+                    let matchFound = false;
+        
+                    for (let j = 0; j < cells.length; j++) {
+                        const textValue = cells[j].textContent || cells[j].innerText;
+                        if (textValue.toUpperCase().includes(filterText)) {
+                            matchFound = true;
+                            break; // If a match is found in any cell, show the row
+                        }
+                    }
+        
+                    if (matchFound) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
+// Function to make the GET request and populate the table
+function loadTableData() {
+    // Define the URL for the GET request
+    const apiUrl2 = 'https://5a08ba10trial-dev-apptemplate-srv.cfapps.us10-001.hana.ondemand.com/catalog/MPL';
+
+    // Fetch data using the GET request
+    // Fetch data using the GET request
+    fetch(apiUrl2, {
+        method: 'GET',
+    })
+    .then(response => response.json())
+    .then(data => {
+        const tableBody = document.getElementById('dataBody2'); // Updated table body ID
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        if (data.value && Array.isArray(data.value)) {
+            data.value.forEach(item => {
+                const mplId = item.MPLId;
+                const stepName = item.StepName;
+                const headers = item.Headers;
+                const properties = item.Properties;
+                const body = item.Body;
+
+                // Create a new table row and cells
+                const row = document.createElement('tr');
+                const mplIdCell = document.createElement('td');
+                const stepNameCell = document.createElement('td');
+                const headersCell = document.createElement('td');
+                const propertiesCell = document.createElement('td');
+                const bodyCell = document.createElement('td');
+
+                // Set cell values
+                mplIdCell.textContent = mplId;
+                stepNameCell.textContent = stepName;
+                headersCell.textContent = headers;
+                propertiesCell.textContent = properties;
+                bodyCell.textContent = body;
+
+                // Append cells to the row
+                row.appendChild(mplIdCell);
+                row.appendChild(stepNameCell);
+                row.appendChild(headersCell);
+                row.appendChild(propertiesCell);
+                row.appendChild(bodyCell);
+
+                // Append the row to the table
+                tableBody.appendChild(row);
+            });
+        } else {
+            console.error('Invalid data format in the response');
+        }
+    })
+    .catch(error => {
+        console.error('Error loading table data:', error);
+    });
+}
+        
+            // Call the function to load table data when the page loads
+            window.addEventListener('load', loadTableData);
+        </script>
+        <button onclick="exportTableToExcel()">Export to Excel</button>
+        <P></P>
+        
+        <script>
+            // Function to export the table data to an Excel file
+            function exportTableToExcel() {
+                const table = document.getElementById("dataTable");
+                const ws = XLSX.utils.table_to_sheet(table);
+        
+                // Create a new workbook and add the worksheet
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Table Data");
+        
+                // Save the workbook as an Excel file
+                XLSX.writeFile(wb, "table_data.xlsx");
+            }
+        </script>
+
+    <script>
+        const setTraceButton = document.getElementById('setTraceButton');
+        const responseMessage = document.getElementById('responseMessage');
+    
+        setTraceButton.addEventListener('click', function () {
+            // Make the fetch request when the button is clicked
+            makeGetRequest();
+        });
+    
+        function makeGetRequest() {
+            // Define the URL and headers
+            const apiUrl = 'https://d122d724trial-trial.integrationsuitetrial-apim.us10.hana.ondemand.com:443/d122d724trial/http/testMarian';
+            const apiKey = '8H7F6hMHlPtLlXBAkRBSuUF7eznoGz21';
+    
+            // Prepare query parameters
+            const queryParams = new URLSearchParams();
+            queryParams.append('Step', 'ActivateTrace');
+            queryParams.append('flowname', iFlowSelectValue);
+            queryParams.append('StartDate', startDateValue);
+            queryParams.append('EndDate', endDateValue);
+    
+            // Construct the full URL
+            const url = `${apiUrl}?${queryParams.toString()}`;
+    
+            // Fetch data using the GET request
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'ApiKey': apiKey
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Update the response message with the fetched data
+                responseMessage.textContent = data;
+    
+                // Reload the table data after making the fetch request
+                loadTableData();
+            })
+            .catch(error => {
+                console.error('Error fetching trace:', error);
+                responseMessage.textContent = 'Error scheduling trace.';
+            });
+        }
+    </script>
+    
+    
 </body>
+
 
 </html>

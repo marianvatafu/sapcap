@@ -1,0 +1,3 @@
+MPLId,StepName,Headers,Properties,Body
+AGUIM4yeTPTgrxYDPCrCrOgOvlBt,SC_CreateBody,lockAcquired = true;CamelToEndpoint = url,CamelExternalRedelivered = false,
+AGUIM4yeTPTgrxYDPCrCrOgOvlBt,CM_SetBody,AnotherTest = bcd,Test = abc,Hello

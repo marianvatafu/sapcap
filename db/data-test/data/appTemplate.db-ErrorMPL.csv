@@ -1,0 +1,2 @@
+Name,FlowId,LogStart,LogEnd,ErrorText,ChatGptResponse,MonitoringLink
+Check_the_monitoring_API,AGUADewSv_R7qO7Yk5YDe5Cx9DMN,2023-09-14T08:43:15,2023-09-14T08:43:16,"com.sap.gateway.core.ip.component.odata.exception.OsciException: An exception of type 'WstxUnexpectedCharException' occurred., cause: com.ctc.wstx.exc.WstxUnexpectedCharException: Unexpected character '=' (code 61); expected a semi-colon after the reference for entity 'client_id' at [row,col {unknown-source}]: [1,519]",example,http://www.google.ro

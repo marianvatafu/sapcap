@@ -55,6 +55,20 @@ annotate catalog.Foods with {
     UOM  @title:'{i18n>UOM}';
 };
 
+annotate catalog.MPL with @(
+    UI: {
+        Identification: [ {Value: Name} ],
+        SelectionFields: [ ],
+        LineItem: [
+            {Value: MPLId},
+            {Value: StepName},
+            {Value: Headers},
+            {Value: Properties},
+            {Value: Body}
+        ]
+    }
+);
+
 
 
 

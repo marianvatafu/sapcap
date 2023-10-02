@@ -24,6 +24,33 @@ entity Fooods {
       Quantity    : String(100);
       UOM         : String(100);
       Username    : String(100);
+      Digit       : String(100);
+};
+
+entity MPL {
+  key MPLId       : String;
+  key StepName        : String;
+      Headers    : String;
+      Properties         : String;
+      Body    : String;
+};
+
+entity ErrorMPL {
+  key Name       : String;
+  key FlowId        : String;
+      LogStart    : String;
+      LogEnd         : String;
+      ErrorText    : String;
+      ChatGptResponse    : String;
+      MonitoringLink    : String;
+};
+
+entity MPLResults {
+  key FlowName       : String;
+  key MPLID        : String;
+      StartTime    : String;
+      EndTime         : String;
+      Status    : String;
 };
 
 }

@@ -13,9 +13,20 @@ service CatalogService @(path : '/catalog')
     entity Foods @(cds.persistence: { update: true })
       as select * from db.Foods
 	  ;
+    
 
     entity Fooods @(cds.persistence: { update: true })
       as select * from db.Fooods
+	  ;
+    entity MPL @(cds.persistence: { update: true })
+      as select * from db.MPL
+	  ;
+
+    entity ErrorMPL @(cds.persistence: { update: true })
+      as select * from db.ErrorMPL
+	  ;
+      entity MPLResults @(cds.persistence: { update: true })
+      as select * from db.MPLResults
 	  ;
 
     @readonly
